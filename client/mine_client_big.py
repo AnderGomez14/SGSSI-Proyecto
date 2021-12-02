@@ -200,15 +200,7 @@ def pool(id):
 if __name__ == '__main__':
     if(len(sys.argv) == 1 or sys.argv[1] == "-h"):
         print(
-            "uso: python mine.py -m [archivo_entrada] [archivo_salida] [id] [num_ceros] [numero_donde_empezar] [numero_acabar]\n")
-    elif(len(sys.argv) == 3 and sys.argv[1] == "-b"):
-        benchmark(sys.argv[2], "b")
-    elif(len(sys.argv) == 8 and sys.argv[1] == "-m"):
-        daddy(sys.argv[2], sys.argv[3], sys.argv[4],
-              sys.argv[5], sys.argv[6], sys.argv[7])
-    elif(len(sys.argv) == 6 and sys.argv[1] == "-m"):
-        daddy(sys.argv[2], sys.argv[3], sys.argv[4],
-              sys.argv[5], 0, 16**8)
+            "uso: python mine_client_big.py -p [id]\n")
     elif(len(sys.argv) == 3 and sys.argv[1] == "-p"):
         if sys.argv[2].isnumeric:
             pool(sys.argv[2])
