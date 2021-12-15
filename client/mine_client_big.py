@@ -22,7 +22,9 @@ def mine(input, output, id, numceros, found, contador):
             f = open(output, "wb")
             f.write(bytes_file + str.encode(hash_i))
             f.close()
-
+            f = open("nonce.txt", "w")
+            f.write(hash_i.split()[0])
+            f.close()
             break
         cont += 1
     found.value = 0
@@ -120,6 +122,7 @@ def pool(id):
         HOST+"henlo.php", data={'id': int(id), 'hr_HRT': hr_HRT, 'hr_Maz': hr_Maz, 'hr_Par': hr_Par})
     if (presentacion.text != "Bienvenido_al_soviet"):
         print("Something went wrong")
+        print(presentacion.text)
         return
     print("Pool notificada")
 

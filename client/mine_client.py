@@ -21,7 +21,9 @@ def mine(input, output, id, numceros, found, contador):
             f = open(output, "wb")
             f.write(bytes_file + str.encode(hash_i))
             f.close()
-
+            f = open("nonce.txt", "w")
+            f.write(hash_i.split()[0])
+            f.close()
             break
         cont += 1
     found.value = 0
