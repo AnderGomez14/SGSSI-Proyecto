@@ -1,21 +1,21 @@
 <?php
 
-$json = json_decode(file_get_contents('hash-rates.json'), true);
+$json = json_decode(file_get_contents(getcwd().'/json/hash-rates.json'), true);
 $time = time();
 $active_miners = array();
 
 foreach ($json["hashes"] as &$valor) {
     //if (true) {
     if ($time - $valor["heartbeat"] < 14) { // 4 segundos de margen
-        if ($valor["id"] == $_POST['id']) {
-            $active_miners[$valor["id"]] = 1;
+        if ($valor["key"] == $_POST['key']) {
+            $active_miners[$valor["key"]] = 1;
         } else {
-            $active_miners[$valor["id"]] = 0;
+            $active_miners[$valor["key"]] = 0;
         }
     }
 }
 if (count($active_miners) <= 1) {
-    unlink("green.json");
+    unlink(getcwd()."/json/green.json");
 }
 
 $target_dir = "./";
@@ -25,8 +25,8 @@ move_uploaded_file($_FILES["upload_file"]["tmp_name"], $target_file);
 
 $candidate_json = array();
 $candidate_json["nonce"] = intval($_POST['nonce']);
-$candidate_json["finder"] = $_POST['id'];
+$candidate_json["finder"] = $_POST['key'];
 $candidate_json["archivo"] = $filename;
 $candidate_json["consenso"] = $active_miners;
-file_put_contents('candidato.json', json_encode($candidate_json));
+file_put_contents(getcwd().'/json/candidato.json', json_encode($candidate_json));
 echo ("candidato_registrado");

@@ -1,0 +1,19 @@
+# Imagen base
+FROM python:3.9-slim-buster
+
+# Copiar el archivo de requisitos al contenedor
+COPY requirements.txt .
+
+# Instalar los requisitos
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar el script de Python al contenedor
+COPY mine_client.py .
+
+# Establecer los parámetros del script como variables de entorno
+ENV ID 13
+ENV KEY L4M1S10N
+
+# Ejecutar el script
+CMD ["python", "mine_client.py", "-p", "$ID", "-k", "$KEY"]
+

@@ -1,9 +1,14 @@
 <?php
+session_start();
+if (!isset($_SESSION['username'])) {
+	exit;
+}
+
 if (count($_POST) != 3) {
     die("ERROR");
 }
-$file = 'hash-rates.json';
-$green_file = 'green.json';
+$file = getcwd().'/json/hash-rates.json';
+$green_file = getcwd().'/json/green.json';
 if (file_exists($file)) {
     $json = json_decode(file_get_contents($file), true);
 } else {
@@ -40,7 +45,7 @@ foreach ($json["hashes"] as &$valor) {
     if ($valor['heartbeat'] != 0) {
         $seccion = floor(($valor[$tag] / $total) * (16 ** 8));
         $end = $i + $seccion;
-        array_push($green_json["splits"], array("id" => $valor['id'], "start" => $i, "end" => $end));
+        array_push($green_json["splits"], array("key" => $valor['key'], "start" => $i, "end" => $end));
         $i = $end;
     }
 }

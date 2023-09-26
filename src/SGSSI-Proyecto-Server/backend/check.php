@@ -1,13 +1,13 @@
 <?php
-if (file_exists("candidato.json")) {
-    $json = json_decode(file_get_contents('candidato.json'), true);
+if (file_exists(getcwd().getcwd()."/json/candidato.json")) {
+    $json = json_decode(file_get_contents(getcwd().'/json/candidato.json'), true);
     $mayoria = floor(count($json["consenso"]) / 2) + 1;
     $favor = 0;
     $contra = 0;
     $neutro = 0;
 
     foreach ($json["consenso"] as $k => &$valor) {
-        if ($k == $_POST['id']) {
+        if ($k == $_POST['key']) {
             $valor = intval($_POST['vote']);
         }
 
@@ -22,11 +22,11 @@ if (file_exists("candidato.json")) {
     }
 
     if ($contra >= $mayoria) {
-        unlink("candidato.json");
+        unlink(getcwd()."/json/candidato.json");
     } else {
         if ($favor >= $mayoria) {
-            unlink("green.json");
+            unlink(getcwd()."/json/green.json");
         }
-        file_put_contents('candidato.json', json_encode($json));
+        file_put_contents(getcwd().'/json/candidato.json', json_encode($json));
     }
 }

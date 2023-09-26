@@ -1,9 +1,9 @@
 <?php
 
-$file = 'hash-rates.json';
+$file = getcwd().'/json/hash-rates.json';
 $json = json_decode(file_get_contents($file), true);
 foreach ($json["hashes"] as &$valor) {
-    if ($valor['id'] == (int) $_POST['id']) {
+    if ($valor['key'] == $_POST['key']) {
         $valor['heartbeat'] = time();
         break;
     }
@@ -12,15 +12,15 @@ foreach ($json["hashes"] as &$valor) {
 $json["hashes"] = array_values($json["hashes"]);
 file_put_contents($file, json_encode($json));
 
-if (file_exists('green.json')) {
-    if (file_exists('candidato.json')) {
-        $json = json_decode(file_get_contents('candidato.json'), true);
+if (file_exists(getcwd().'/json/green.json')) {
+    if (file_exists(getcwd().'/json/candidato.json')) {
+        $json = json_decode(file_get_contents(getcwd().'/json/candidato.json'), true);
         echo json_encode(array("nonce" => $json["nonce"]));
     } else {
-        $json = json_decode(file_get_contents('green.json'), true);
+        $json = json_decode(file_get_contents(getcwd().'/json/green.json'), true);
 
         foreach ($json["splits"] as &$valor) {
-            if ($valor['id'] == (int) $_POST['id']) {
+            if ($valor['key'] == $_POST['key']) {
                 $start = $valor['start'];
                 $end = $valor['end'];
                 break;

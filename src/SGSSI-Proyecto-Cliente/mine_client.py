@@ -1,13 +1,13 @@
 import hashlib
 import sys
 import time
+import os
 import requests
 from multiprocessing import Process, Value, cpu_count
 import json
 
 
-HOST = "http://localhost/server/"
-
+HOST = "http://localhost:8000/api/"
 
 def mine(input, output, id, numceros, found, contador):
     with open(input, "rb") as f:
@@ -63,15 +63,17 @@ def bench(input, id, numceros, found, contador, target):
 
 
 def benchmark(input, mode):
+    #Cogemos el numero de bytes del archivo
+    size = os.path.getsize(input)
     if mode == "HRT":
         thread_number = 1
-        iterations = 700000
+        iterations = 500000 * (2300/size) + 1
     elif mode == "Mazepin":
         thread_number = cpu_count()//2
-        iterations = 1000000
+        iterations = 800000 * (2300/size) + 1
     else:
         thread_number = cpu_count()
-        iterations = 1500000
+        iterations = 1200000 * (2300/size) + 1
     start_time = time.time()
     found = Value('f', 1)
     timmys = [Process(target=bench, args=(input, "pool_goes_brrrrrr", 10, found, 0+((16**8)//thread_number)*i, iterations))
@@ -102,7 +104,7 @@ def verify(input, id, numceros, nonce):
         return False
 
 
-def pool(id):
+def pool(idMiner):
     print("Descargando archivo a minar")
     r = requests.get(HOST+"file.php", allow_redirects=True)
     input = r.url.split("/").pop()
@@ -118,15 +120,22 @@ def pool(id):
 
     print("Notificando a la pool...")
     presentacion = requests.post(
-        HOST+"henlo.php", data={'id': int(id), 'hr_HRT': hr_HRT, 'hr_Maz': hr_Maz, 'hr_Par': hr_Par})
-    if (presentacion.text != "Bienvenido_al_soviet"):
-        print("Something went wrong")
+        HOST+"henlo.php", data={'id': int(idMiner), 'hr_HRT': hr_HRT, 'hr_Maz': hr_Maz, 'hr_Par': hr_Par, 'poolKey': poolKey})
+    if (presentacion.text == "BAD_POOL_KEY"):
+        print("Clave de la pool incorrecta")
         return
+    # Si no es JSON la respuesta
+    if (presentacion.text[0] != "{"):
+        print("ERROR")
+        return
+    presentacion = json.loads(presentacion.text)
+    key = presentacion["key"]
     print("Pool notificada")
+
 
     while True:
         status = requests.post(
-            HOST+"status.php", data={'id': int(id)})
+            HOST+"status.php", data={'key': key})
         if status.text == "Estamos_trabajando_en_ello":
             print("Esperando para el green green green")
             time.sleep(10)
@@ -165,17 +174,17 @@ def pool(id):
         if i == 10:
             i = 0
             status = requests.post(
-                HOST+"status.php", data={'id': int(id)})
+                HOST+"status.php", data={'key': key})
             if status.text != "Estamos_trabajando_en_ello":
                 status = json.loads(status.text)
                 if("nonce" in status):
                     if(verify(input, id_pool, numceros, status["nonce"])):
                         status = requests.post(
-                            HOST+"check.php", data={'id': int(id), 'vote': 1})
+                            HOST+"check.php", data={'key': key, 'vote': 1})
                         break
                     else:
                         status = requests.post(
-                            HOST+"check.php", data={'id': int(id), 'vote': -1})
+                            HOST+"check.php", data={'key': key, 'vote': -1})
                         time.sleep(5)
                 else:
                     print("Estamos trabajando en ello")
@@ -192,7 +201,7 @@ def pool(id):
         f.close()
         files = {'upload_file': open(output, 'rb')}
         requests.post(
-            HOST+"winner.php", data={'id': int(id), "nonce": nonce}, files=files)
+            HOST+"winner.php", data={'key': key, "nonce": nonce}, files=files)
 
     for t in timmys:
         t.terminate()
@@ -201,8 +210,10 @@ def pool(id):
 if __name__ == '__main__':
     if(len(sys.argv) == 1 or sys.argv[1] == "-h"):
         print(
-            "uso: python mine_client.py -p [id]\n")
-    elif(len(sys.argv) == 3 and sys.argv[1] == "-p"):
+            "uso: python mine_client.py -p [id] -k [poolKey]\n")
+    elif(len(sys.argv) == 5 and sys.argv[1] == "-p" and sys.argv[3] == "-k"):
+        global poolKey
+        poolKey = sys.argv[4]
         if sys.argv[2].isnumeric:
             pool(sys.argv[2])
         else:

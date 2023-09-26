@@ -8,7 +8,7 @@ function reloadMiners() {
     $("#miners").html("");
     $("#miners").append("<tr><th>ID Minero</th><th>Hash-rate Friendly</th><th>Hash-rate no tan Friendly</th><th>Hash-rate 🔥</th><th>Estado</th></tr>");
 
-    $.getJSON('hash-rates.json?cache=' + parseInt(time), function (jd) {
+    $.getJSON(getcwd().'/json/hash-rates.json?cache=' + parseInt(time), function (jd) {
         jd.hashes.forEach(m => drawMiner(m.id, m.hr_HRT, m.hr_Maz, m.hr_Par, time - m.heartbeat < 13))
 
     }).always(function () { $("#miners").append("<tr><td>Total:</td><td>" + thr_HRT + " H/s</td><td>" + thr_Maz + " H/s</td><td>" + thr_Par + " H/s</td><td></td></tr>"); });;

@@ -1,23 +1,69 @@
 # SGSSI-21.Pool
 
-Pool para minar bloques (y otros archivos) de la asignatura SGSSI.
+Pool para minar bloques (y otros archivos) de la blockchain de la asignatura SGSSI.
 
-## Minero
+## Tabla de contenidos
 
-Puedes conectarte a la pool haciendo:
+1. [Primeros pasos](#primeros-pasos)
+	1. [Prerrequisitos](#prerrequisitos)
+	2. [Instalación](#instalación)
+	3. [Uso](#uso)
+2. [Funcionalidades](#funcionalidades)
+3. [Tecnologías](#tecnologías)
+4. [Contributing](#contributing)
+5. [Autores](#autores)
+6. [Licencia](#licencia)
 
+## Primeros pasos
+
+### Prerrequisitos
+
+- Python para el cliente
+- Servidor PHP
+- Node.js
+
+Tambien existen las opciones de contenedores docker tanto para el cliente como el servidor
+
+## Instalación
+
+Lista con los pasos a seguir para empezar a trabajar.
+
+Cliente
 ```shell
 > cd <project location>/client
 > pip install requests
-> python python mine_client.py -p [id]
+> python mine.py
 ```
 
-Si se desea minar un fichero grande (por ejemplo: PDF), se puede usar `mine_client_big.py` en vez de `mine_client.py`.
+Servidor
+```shell
+> npm install
+> npm run start
+```
 
-## Servidor pool
+## Funcionalidades
+<!--- Enumera las funcionalidades del proyecto --->
 
-Para poder desplegar el servidor, hace falta un servidor compatible con PHP (Apache funciona bien).
+* Permite minar en la pool SGSSI.
 
-Se despliega la carpeta `server` en el servidor y se accede a `missioncontrol.php`.
 
-Despues poner la URL del servidor en la variable `HOST` de `mine_client.py` y `mine_client_big.py`
+## Tecnologías
+
+* [NGINX]() - Web framework
+* [Docker]() - Contenedores
+
+## Contributing
+
+Por favor, ve al fichero [CONTRIBUTING.md](CONTRIBUTING.md) para leer con detalle como contribuir al proyecto.
+
+## Autores
+
+* **<author>** - *Pool* - [AnderGomez14](https://github.com/AnderGomez14)
+
+
+## Licencia
+
+Este proyecto esta bajo la licencia MIT License, entra en [LICENSE.md](LICEwNSE.md) para más detalles.
+
+
+
